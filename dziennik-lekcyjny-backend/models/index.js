@@ -5,15 +5,15 @@ const Uczen = require('./Uczen');
 const Obecnosc = require('./Obecnosc');
 const Ocena = require('./Ocena');
 const FormaSprawdzania = require('./FormaSprawdzania');
-const KursyUczniowie = require('./KursyUczniowie');
 
 // Relacja Nauczyciel - Kurs (1:N)
 Nauczyciel.hasMany(Kurs, { foreignKey: 'nauczyciel_id' });
 Kurs.belongsTo(Nauczyciel, { foreignKey: 'nauczyciel_id' });
 
-// Relacja Kurs - Uczen (N:M) przez tabelę kursy_uczniowie
+/* Relacja Kurs - Uczen (N:M) przez tabelę kursy_uczniowie
 Kurs.belongsToMany(Uczen, { through: 'kursy_uczniowie', foreignKey: 'kurs_id', otherKey: 'uczen_id' });
 Uczen.belongsToMany(Kurs, { through: 'kursy_uczniowie', foreignKey: 'uczen_id', otherKey: 'kurs_id' });
+*/
 
 // Relacja Kurs - FormaSprawdzania (1:N)
 Kurs.hasMany(FormaSprawdzania, { foreignKey: 'kurs_id' });
@@ -41,6 +41,5 @@ module.exports = {
   Uczen,
   Obecnosc,
   Ocena,
-  FormaSprawdzania,
-  KursyUczniowie
+  FormaSprawdzania
 };
