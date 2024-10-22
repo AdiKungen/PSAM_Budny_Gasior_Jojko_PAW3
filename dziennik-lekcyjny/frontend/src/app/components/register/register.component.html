@@ -1,0 +1,17 @@
+<h2>Rejestracja</h2>
+<form (submit)="register()">
+  <label for="imie">Imię:</label>
+  <input type="text" id="imie" [(ngModel)]="registerData.imie" name="imie" required>
+  <br>
+  <label for="nazwisko">Nazwisko:</label>
+  <input type="text" id="nazwisko" [(ngModel)]="registerData.nazwisko" name="nazwisko" required>
+  <br>
+  <label for="login">Login:</label>
+  <input type="text" id="login" [(ngModel)]="registerData.login" name="login" required>
+  <br>
+  <label for="haslo">Hasło:</label>
+  <input type="password" id="haslo" [(ngModel)]="registerData.haslo" name="haslo" required>
+  <br>
+  <button type="submit">Zarejestruj się</button>
+</form>
+<p>Masz już konto? <a routerLink="/">Zaloguj się</a></p>
