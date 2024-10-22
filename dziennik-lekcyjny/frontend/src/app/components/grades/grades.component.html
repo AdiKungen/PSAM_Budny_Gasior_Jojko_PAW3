@@ -1,0 +1,49 @@
+<h2>Wpisywanie Ocen</h2>
+
+<!-- <h3>Dodaj Formę Sprawdzania Wiedzy</h3>
+<form (submit)="addForm()">
+  <label for="typ">Typ:</label>
+  <select id="typ" [(ngModel)]="newForm.typ" name="typ" required>
+    <option value="kartkowka">Kartkówka</option>
+    <option value="sprawdzian">Sprawdzian</option>
+    <option value="odpowiedz_ustna">Odpowiedź Ustna</option>
+    <option value="inna">Inna</option>
+  </select>
+  <br>
+  <label for="waga">Waga:</label>
+  <input type="number" id="waga" [(ngModel)]="newForm.waga" name="waga" required>
+  <br>
+  <button type="submit">Dodaj Formę</button>
+</form> -->
+
+<h3>Dodaj Ocenę</h3>
+<form (submit)="addGrade()">
+  <label for="uczen_id">Uczeń:</label>
+  <select id="uczen_id" [(ngModel)]="newGrade.uczen_id" name="uczen_id" required>
+    <option *ngFor="let student of students" [value]="student.id">{{ student.imie }} {{ student.nazwisko }}</option>
+  </select>
+  <br>
+  <label for="forma_sprawdzania_id">Forma Sprawdzania:</label>
+  <select id="forma_sprawdzania_id" [(ngModel)]="newGrade.forma_sprawdzania_id" name="forma_sprawdzania_id" required>
+    <option *ngFor="let form of forms" [value]="form.id">{{ form.typ }} (Waga: {{ form.waga }})</option>
+  </select>
+  <br>
+  <label for="wartosc">Ocena:</label>
+  <input type="number" id="wartosc" [(ngModel)]="newGrade.wartosc" name="wartosc" required>
+  <br>
+  <label for="data">Data:</label>
+  <input type="date" id="data" [(ngModel)]="newGrade.data" name="data" required>
+  <br>
+  <button type="submit">Dodaj Ocenę</button>
+</form>
+
+<h3>Oblicz Średnią</h3>
+<form (submit)="calculateAverage()">
+  <label for="uczen_id_avg">Uczeń:</label>
+  <select id="uczen_id_avg" [(ngModel)]="selectedStudentId" name="uczen_id_avg" required>
+    <option *ngFor="let student of students" [value]="student.id">{{ student.imie }} {{ student.nazwisko }}</option>
+  </select>
+  <br>
+  <button type="submit">Oblicz Średnią</button>
+</form>
+<p *ngIf="average">Średnia ocen: {{ average }}</p>

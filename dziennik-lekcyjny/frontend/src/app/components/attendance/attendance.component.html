@@ -1,0 +1,20 @@
+<h2>Sprawdzanie Obecności</h2>
+
+<label for="data">Data:</label>
+<input type="date" id="data" [(ngModel)]="data" name="data" (change)="initializeAttendance()">
+
+<form (submit)="markAttendance()">
+  <table>
+    <tr>
+      <th>Uczeń</th>
+      <th>Obecny</th>
+    </tr>
+    <tr *ngFor="let attendance of attendanceData; let i = index">
+      <td>{{ students[i].imie }} {{ students[i].nazwisko }}</td>
+      <td>
+        <input type="checkbox" [(ngModel)]="attendance.status" name="status{{i}}">
+      </td>
+    </tr>
+  </table>
+  <button type="submit">Zapisz Obecność</button>
+</form>

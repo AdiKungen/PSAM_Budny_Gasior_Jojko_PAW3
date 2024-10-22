@@ -1,0 +1,19 @@
+<h2>Zarządzanie Uczniami</h2>
+
+<form (submit)="addStudent()">
+  <label for="imie">Imię:</label>
+  <input type="text" id="imie" [(ngModel)]="newStudent.imie" name="imie" required>
+  <br>
+  <label for="nazwisko">Nazwisko:</label>
+  <input type="text" id="nazwisko" [(ngModel)]="newStudent.nazwisko" name="nazwisko" required>
+  <br>
+  <button type="submit">Dodaj Ucznia</button>
+</form>
+
+<ul>
+  <li *ngFor="let student of students">
+    {{ student.imie }} {{ student.nazwisko }}
+    <button (click)="deleteStudent(student.id)">Usuń</button>
+    <!-- Możesz dodać opcję edycji ucznia -->
+  </li>
+</ul>

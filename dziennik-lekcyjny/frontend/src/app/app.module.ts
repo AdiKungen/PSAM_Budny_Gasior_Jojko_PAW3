@@ -8,6 +8,11 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
+import { CoursesComponent } from './components/courses/courses.component';
+import { StudentsComponent } from './components/students/students.component';
+import { AttendanceComponent } from './components/attendance/attendance.component';
+import { GradesComponent } from './components/grades/grades.component';
+
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TokenInterceptor } from './interceptors/token.interceptor';
@@ -16,7 +21,11 @@ import { TokenInterceptor } from './interceptors/token.interceptor';
   declarations: [
     AppComponent,
     LoginComponent,
-    RegisterComponent
+    RegisterComponent,
+    CoursesComponent,
+    StudentsComponent,
+    AttendanceComponent,
+    GradesComponent
   ],
   imports: [
     BrowserModule,
