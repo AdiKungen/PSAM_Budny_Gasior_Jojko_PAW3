@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Paź 17, 2024 at 12:49 PM
+-- Generation Time: Paź 24, 2024 at 03:16 PM
 -- Wersja serwera: 10.4.32-MariaDB
 -- Wersja PHP: 8.2.12
 
@@ -31,8 +31,18 @@ CREATE TABLE `formy_sprawdzania` (
   `id` int(11) NOT NULL,
   `kurs_id` int(11) NOT NULL,
   `typ` enum('kartkowka','sprawdzian','odpowiedz_ustna','inna') NOT NULL,
-  `waga` decimal(5,2) NOT NULL
+  `opis` varchar(255) NOT NULL,
+  `waga` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `formy_sprawdzania`
+--
+
+INSERT INTO `formy_sprawdzania` (`id`, `kurs_id`, `typ`, `opis`, `waga`) VALUES
+(5, 2, 'kartkowka', 'Pan Tadeusz', 0),
+(6, 2, 'sprawdzian', '', 1),
+(7, 2, 'odpowiedz_ustna', '', 0);
 
 -- --------------------------------------------------------
 
@@ -46,6 +56,13 @@ CREATE TABLE `kursy` (
   `nazwa` varchar(255) NOT NULL,
   `data_rozpoczecia` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `kursy`
+--
+
+INSERT INTO `kursy` (`id`, `nauczyciel_id`, `nazwa`, `data_rozpoczecia`) VALUES
+(2, 1, 'Matematyka - PAW3', '2024-10-29');
 
 -- --------------------------------------------------------
 
@@ -61,6 +78,15 @@ CREATE TABLE `nauczyciele` (
   `haslo` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `nauczyciele`
+--
+
+INSERT INTO `nauczyciele` (`id`, `imie`, `nazwisko`, `login`, `haslo`) VALUES
+(1, 'Jarosław', 'Gąsior', 'jrygames', '$2b$10$D8.20ybPITSV9prMSECIQ.3T5MsjCfro2yocXEo9ws3gRCxnpxIwG'),
+(2, 'Adrian', 'Budny', 'abudny', '$2b$10$PvtEYA8b847l0.t0DGZZFerz0T.2rjz3z5OIe9vzpcA6g78jQHPy6'),
+(4, 'a', 'b', 'c', '$2b$10$PMtHrGU5XsKiF1vg6R0jIOLmlRx0IoOhgDB86NNHrh027B1IRTu/W');
+
 -- --------------------------------------------------------
 
 --
@@ -74,6 +100,14 @@ CREATE TABLE `obecnosci` (
   `data` date NOT NULL,
   `status` tinyint(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `obecnosci`
+--
+
+INSERT INTO `obecnosci` (`id`, `kurs_id`, `uczen_id`, `data`, `status`) VALUES
+(7, 2, 2, '2024-10-29', NULL),
+(8, 2, 4, '2024-10-31', NULL);
 
 -- --------------------------------------------------------
 
@@ -90,6 +124,16 @@ CREATE TABLE `oceny` (
   `anulowana` tinyint(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `oceny`
+--
+
+INSERT INTO `oceny` (`id`, `uczen_id`, `forma_sprawdzania_id`, `wartosc`, `data`, `anulowana`) VALUES
+(1, 2, 5, 4.00, '2024-10-29', 0),
+(2, 4, 6, 3.00, '2024-10-31', 0),
+(3, 4, 5, 5.00, '2024-10-24', 0),
+(4, 2, 6, 5.00, '2024-10-24', 0);
+
 -- --------------------------------------------------------
 
 --
@@ -101,6 +145,15 @@ CREATE TABLE `uczniowie` (
   `imie` varchar(255) NOT NULL,
   `nazwisko` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `uczniowie`
+--
+
+INSERT INTO `uczniowie` (`id`, `imie`, `nazwisko`) VALUES
+(2, 'Adrian', 'Budny'),
+(3, 'Jarosław', 'Gąsior'),
+(4, 'Dominik', 'Jojko');
 
 --
 -- Indeksy dla zrzutów tabel
@@ -157,37 +210,37 @@ ALTER TABLE `uczniowie`
 -- AUTO_INCREMENT for table `formy_sprawdzania`
 --
 ALTER TABLE `formy_sprawdzania`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `kursy`
 --
 ALTER TABLE `kursy`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `nauczyciele`
 --
 ALTER TABLE `nauczyciele`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `obecnosci`
 --
 ALTER TABLE `obecnosci`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `oceny`
 --
 ALTER TABLE `oceny`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `uczniowie`
 --
 ALTER TABLE `uczniowie`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables
