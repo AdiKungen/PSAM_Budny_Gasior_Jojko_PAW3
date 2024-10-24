@@ -1,5 +1,5 @@
 <h2>Rejestracja</h2>
-<form (submit)="register()">
+<form (submit)="register(); $event.preventDefault()">
   <label for="imie">Imię:</label>
   <input type="text" id="imie" [(ngModel)]="registerData.imie" name="imie" required>
   <br>
@@ -12,6 +12,12 @@
   <label for="haslo">Hasło:</label>
   <input type="password" id="haslo" [(ngModel)]="registerData.haslo" name="haslo" required>
   <br>
+  <label for="confirmHaslo">Powtórz hasło:</label>
+  <input type="password" id="confirmHaslo" [(ngModel)]="registerData.confirmHaslo" name="confirmHaslo" required>
+  <br>
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
   <button type="submit">Zarejestruj się</button>
 </form>
 <p>Masz już konto? <a routerLink="/">Zaloguj się</a></p>

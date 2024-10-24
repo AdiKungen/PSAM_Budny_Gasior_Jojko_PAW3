@@ -1,9 +1,10 @@
 <nav>
-    <a routerLink="/">Login</a>
-    <a routerLink="/register">Register</a>
-    <a routerLink="/courses">Courses</a>
-    <a routerLink="/students">Students</a>
-    <a routerLink="/attendance">Attendance</a>
-    <a routerLink="/grades">Grades</a>
+    <a routerLink="/">Login</a> <br/>
+    <a routerLink="/register">Register</a> <br/>
+    <a routerLink="/courses">Courses</a> <br/>
+    <a routerLink="/students">Students</a> <br/>
+    <a routerLink="/attendance">Attendance</a> <br/>
+    <a routerLink="/grades">Grades</a> <br/>
+    <button *ngIf="authService.isLoggedIn()" (click)="logout()">Wyloguj</button>
   </nav>
 <router-outlet></router-outlet>
