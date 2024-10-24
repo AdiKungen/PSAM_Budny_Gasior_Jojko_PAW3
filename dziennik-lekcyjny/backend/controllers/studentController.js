@@ -54,3 +54,23 @@ exports.getStudents = (req, res) => {
     res.json(results);
   });
 };
+
+// Dodany endpoint do pobierania uczniów zapisanych na dany kurs
+exports.getStudentsByCourse = (req, res) => {
+  const { kurs_id } = req.params;
+
+  const sql = `
+    SELECT DISTINCT u.*
+    FROM uczniowie u
+    JOIN obecnosci ob ON u.id = ob.uczen_id
+    WHERE ob.kurs_id = ?
+  `;
+
+  db.query(sql, [kurs_id], (err, results) => {
+    if (err) {
+      console.error('Błąd pobierania uczniów dla kursu:', err);
+      return res.status(500).json({ message: 'Błąd serwera' });
+    }
+    res.json(results);
+  });
+};

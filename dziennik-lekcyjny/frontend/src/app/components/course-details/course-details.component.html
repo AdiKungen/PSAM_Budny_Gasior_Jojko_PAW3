@@ -1,0 +1,83 @@
+<h2>Szczegóły Kursu: {{ course.nazwa }}</h2>
+
+<!-- Formularz do dodawania nowej formy sprawdzania -->
+<h3>Dodaj Nową Formę Sprawdzania</h3>
+<form #form="ngForm" (ngSubmit)="addForm(form)">
+  <label for="typ">Typ:</label>
+  <select id="typ" [(ngModel)]="newForm.typ" name="typ" required #typ="ngModel">
+    <option value="" disabled selected>Wybierz typ</option>
+    <option value="kartkowka">Kartkówka</option>
+    <option value="sprawdzian">Sprawdzian</option>
+    <option value="odpowiedz_ustna">Odpowiedź ustna</option>
+    <option value="inna">Inna</option>
+  </select>
+  <!-- Komunikat błędu dla pola Typ -->
+  <div *ngIf="typ.invalid && typ.touched" class="error-message">
+    Proszę wybrać typ.
+  </div>
+  <br />
+
+  <label for="opis">Opis:</label>
+  <input
+    type="text"
+    id="opis"
+    [(ngModel)]="newForm.opis"
+    name="opis"
+    required
+    #opis="ngModel"
+  />
+  <!-- Komunikat błędu dla pola Opis -->
+  <div *ngIf="opis.invalid && opis.touched" class="error-message">
+    Proszę podać opis.
+  </div>
+  <br />
+
+  <label for="waga">Waga:</label>
+  <input
+    type="number"
+    id="waga"
+    [(ngModel)]="newForm.waga"
+    name="waga"
+    min="1"
+    required
+    #waga="ngModel"
+  />
+  <!-- Komunikat błędu dla pola Waga -->
+  <div *ngIf="waga.invalid && waga.touched" class="error-message">
+    Proszę podać wagę.
+  </div>
+  <br />
+
+  <!-- Przyciski Submit i Reset -->
+  <button type="submit" [disabled]="form.invalid">Dodaj Formę</button>
+</form>
+
+<!-- Tabela z uczniami i ocenami -->
+<h3>Lista Uczniów i Oceny</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Id Ucznia</th>
+      <th>Imię i Nazwisko Ucznia</th>
+      <!-- Generowanie dynamicznych kolumn -->
+      <th *ngFor="let form of forms">
+        {{ form.typ }} <br /> ({{ form.opis }})
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let student of students">
+      <td>{{ student.id }}</td>
+      <td>{{ student.imie }} {{ student.nazwisko }}</td>
+      <td *ngFor="let form of forms">
+        <input
+          type="number"
+          min="1"
+          max="6"
+          [(ngModel)]="gradeValues[student.id][form.id]"
+          (blur)="saveGrade(student.id, form.id)"
+        />
+      </td>
+    </tr>
+  </tbody>
+</table>

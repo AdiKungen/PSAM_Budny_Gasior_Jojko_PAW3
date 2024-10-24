@@ -1,20 +1,23 @@
 import { Component, OnInit } from '@angular/core';
 import { CourseService } from '../../services/course.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-courses',
   templateUrl: './courses.component.html',
-  styleUrls: ['./courses.component.css']
+  styleUrls: ['./courses.component.css'],
 })
 export class CoursesComponent implements OnInit {
-
   courses: any[] = [];
   newCourse = {
     nazwa: '',
-    data_rozpoczecia: ''
+    data_rozpoczecia: '',
   };
 
-  constructor(private courseService: CourseService) { }
+  constructor(
+    private courseService: CourseService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.getCourses();
@@ -22,10 +25,10 @@ export class CoursesComponent implements OnInit {
 
   getCourses() {
     this.courseService.getCourses().subscribe(
-      res => {
+      (res) => {
         this.courses = res;
       },
-      err => {
+      (err) => {
         console.error('Błąd pobierania kursów:', err);
       }
     );
@@ -33,14 +36,18 @@ export class CoursesComponent implements OnInit {
 
   createCourse() {
     this.courseService.createCourse(this.newCourse).subscribe(
-      res => {
+      (res) => {
         alert('Kurs utworzony');
         this.getCourses();
       },
-      err => {
+      (err) => {
         console.error('Błąd tworzenia kursu:', err);
       }
     );
   }
 
+  // Nowa metoda do nawigacji do szczegółów kursu
+  goToCourseDetails(kurs_id: number) {
+    this.router.navigate(['/courses', kurs_id]);
+  }
 }

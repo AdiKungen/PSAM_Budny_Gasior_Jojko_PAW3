@@ -28,3 +28,18 @@ exports.getCourses = (req, res) => {
     res.json(results);
   });
 };
+
+exports.getCourseById = (req, res) => {
+  const kurs_id = req.params.id;
+
+  const sql = 'SELECT * FROM kursy WHERE id = ?';
+
+  db.query(sql, [kurs_id], (err, results) => {
+    if (err) {
+      console.error('Błąd pobierania kursu:', err);
+      return res.status(500).json({ message: 'Błąd serwera' });
+    }
+    res.json(results);
+  });
+};
+

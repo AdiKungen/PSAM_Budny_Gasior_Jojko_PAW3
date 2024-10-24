@@ -1,47 +1,51 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { NgForm } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css']
+  styleUrls: ['./register.component.css'],
 })
 export class RegisterComponent {
-
-  registerData = {
+  registerData: {
+    imie: string;
+    nazwisko: string;
+    login: string;
+    haslo: string;
+    confirmHaslo: string;
+  } = {
     imie: '',
     nazwisko: '',
     login: '',
     haslo: '',
-    confirmHaslo: ''
+    confirmHaslo: '',
   };
 
-  errorMessage: string = '';
-  
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(private authService: AuthService, private router: Router) {}
 
-  register() {
-    // Sprawdzenie, czy hasła się zgadzają
-    if (this.registerData.haslo !== this.registerData.confirmHaslo) {
-      this.errorMessage = 'Hasła nie są identyczne.';
+  register(form: NgForm) {
+    if (form.invalid) {
+      // Jeśli formularz jest niepoprawny, nie wysyłaj danych
       return;
     }
 
-    // Jeśli hasła się zgadzają, wyczyść komunikat o błędzie
-    this.errorMessage = '';
+    // Sprawdzenie, czy hasła się zgadzają
+    if (this.registerData.haslo !== this.registerData.confirmHaslo) {
+      return;
+    }
 
     // Wyślij dane do serwisu uwierzytelniania
     const { imie, nazwisko, login, haslo } = this.registerData; // Pomijamy confirmHaslo
     this.authService.register({ imie, nazwisko, login, haslo }).subscribe(
-      res => {
+      (res) => {
         alert('Rejestracja pomyślna');
         this.router.navigate(['/']);
       },
-      err => {
+      (err) => {
         alert('Błąd rejestracji');
       }
     );
   }
-
 }

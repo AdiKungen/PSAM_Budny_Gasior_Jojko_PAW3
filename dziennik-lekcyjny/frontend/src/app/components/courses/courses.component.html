@@ -1,18 +1,30 @@
 <h2>Twoje Kursy</h2>
 
-<form (submit)="createCourse()">
+<form (submit)="createCourse(); $event.preventDefault()">
   <label for="nazwa">Nazwa Kursu:</label>
-  <input type="text" id="nazwa" [(ngModel)]="newCourse.nazwa" name="nazwa" required>
-  <br>
+  <input
+    type="text"
+    id="nazwa"
+    [(ngModel)]="newCourse.nazwa"
+    name="nazwa"
+    required
+  />
+  <br />
   <label for="data_rozpoczecia">Data Rozpoczęcia:</label>
-  <input type="date" id="data_rozpoczecia" [(ngModel)]="newCourse.data_rozpoczecia" name="data_rozpoczecia" required>
-  <br>
+  <input
+    type="date"
+    id="data_rozpoczecia"
+    [(ngModel)]="newCourse.data_rozpoczecia"
+    name="data_rozpoczecia"
+    required
+  />
+  <br />
   <button type="submit">Utwórz Kurs</button>
 </form>
 
 <ul>
   <li *ngFor="let course of courses">
-    {{ course.nazwa }} - {{ course.data_rozpoczecia }}
-    <!-- Możesz dodać linki do zarządzania kursem -->
+    {{ course.nazwa }} - {{ course.data_rozpoczecia | date:'yyyy-MM-dd' }} ( {{ course.data_rozpoczecia | date:'EEEE' }} )
+    <button (click)="goToCourseDetails(course.id)">Szczegóły</button>
   </li>
 </ul>

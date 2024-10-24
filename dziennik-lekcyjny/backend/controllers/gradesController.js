@@ -1,11 +1,11 @@
 const db = require('../config/db');
 
 exports.addForm = (req, res) => {
-  const { kurs_id, typ, waga } = req.body;
+  const { kurs_id, typ, waga, opis } = req.body;
 
-  const sql = 'INSERT INTO formy_sprawdzania (kurs_id, typ, waga) VALUES (?, ?, ?)';
+  const sql = 'INSERT INTO formy_sprawdzania (kurs_id, typ, waga, opis) VALUES (?, ?, ?, ?)';
 
-  db.query(sql, [kurs_id, typ, waga], (err, result) => {
+  db.query(sql, [kurs_id, typ, waga, opis], (err, result) => {
     if (err) {
       console.error('Błąd dodawania formy sprawdzania:', err);
       return res.status(500).json({ message: 'Błąd serwera' });
@@ -109,3 +109,33 @@ function obliczSrednia(oceny, res) {
 
   res.json({ srednia });
 }
+
+// Dodany endpoint do pobierania form sprawdzania dla danego kursu
+exports.getFormsByCourse = (req, res) => {
+  const { kurs_id } = req.params;
+
+  const sql = 'SELECT * FROM formy_sprawdzania WHERE kurs_id = ?';
+
+  db.query(sql, [kurs_id], (err, results) => {
+    if (err) {
+      console.error('Błąd pobierania form sprawdzania:', err);
+      return res.status(500).json({ message: 'Błąd serwera' });
+    }
+    res.json(results);
+  });
+};
+
+// Dodany endpoint do pobierania ocen dla danego kursu
+exports.getGradesByCourse = (req, res) => {
+  const { kurs_id } = req.params;
+
+  const sql = `SELECT o.* FROM oceny o JOIN formy_sprawdzania f ON f.id = o.forma_sprawdzania_id WHERE f.kurs_id = ?`;
+
+  db.query(sql, [kurs_id], (err, results) => {
+    if (err) {
+      console.error('Błąd pobierania ocen dla kursu:', err);
+      return res.status(500).json({ message: 'Błąd serwera' });
+    }
+    res.json(results);
+  });
+};

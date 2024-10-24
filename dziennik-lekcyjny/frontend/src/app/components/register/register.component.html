@@ -1,23 +1,78 @@
 <h2>Rejestracja</h2>
-<form (submit)="register(); $event.preventDefault()">
+<form #registerForm="ngForm" (ngSubmit)="register(registerForm)" novalidate>
   <label for="imie">Imię:</label>
-  <input type="text" id="imie" [(ngModel)]="registerData.imie" name="imie" required>
-  <br>
-  <label for="nazwisko">Nazwisko:</label>
-  <input type="text" id="nazwisko" [(ngModel)]="registerData.nazwisko" name="nazwisko" required>
-  <br>
-  <label for="login">Login:</label>
-  <input type="text" id="login" [(ngModel)]="registerData.login" name="login" required>
-  <br>
-  <label for="haslo">Hasło:</label>
-  <input type="password" id="haslo" [(ngModel)]="registerData.haslo" name="haslo" required>
-  <br>
-  <label for="confirmHaslo">Powtórz hasło:</label>
-  <input type="password" id="confirmHaslo" [(ngModel)]="registerData.confirmHaslo" name="confirmHaslo" required>
-  <br>
-  <div *ngIf="errorMessage" class="error-message">
-    {{ errorMessage }}
+  <input
+    type="text"
+    id="imie"
+    [(ngModel)]="registerData.imie"
+    name="imie"
+    required
+    #imie="ngModel"
+  />
+  <div *ngIf="imie.invalid && imie.touched" class="error-message">
+    Imię jest wymagane.
   </div>
-  <button type="submit">Zarejestruj się</button>
+  <br />
+
+  <label for="nazwisko">Nazwisko:</label>
+  <input
+    type="text"
+    id="nazwisko"
+    [(ngModel)]="registerData.nazwisko"
+    name="nazwisko"
+    required
+    #nazwisko="ngModel"
+  />
+  <div *ngIf="nazwisko.invalid && nazwisko.touched" class="error-message">
+    Nazwisko jest wymagane.
+  </div>
+  <br />
+
+  <label for="login">Login:</label>
+  <input
+    type="text"
+    id="login"
+    [(ngModel)]="registerData.login"
+    name="login"
+    required
+    #login="ngModel"
+  />
+  <div *ngIf="login.invalid && login.touched" class="error-message">
+    Login jest wymagany.
+  </div>
+  <br />
+
+  <label for="haslo">Hasło:</label>
+  <input
+    type="password"
+    id="haslo"
+    [(ngModel)]="registerData.haslo"
+    name="haslo"
+    required
+    #haslo="ngModel"
+  />
+  <div *ngIf="haslo.invalid && haslo.touched" class="error-message">
+    Hasło jest wymagane.
+  </div>
+  <br />
+
+  <label for="confirmHaslo">Powtórz hasło:</label>
+  <input
+    type="password"
+    id="confirmHaslo"
+    [(ngModel)]="registerData.confirmHaslo"
+    name="confirmHaslo"
+    required
+    #confirmHaslo="ngModel"
+  />
+  <div *ngIf="confirmHaslo.invalid && confirmHaslo.touched" class="error-message">
+    Powtórzenie hasła jest wymagane.
+  </div>
+  <div *ngIf="registerForm.submitted && registerData.haslo !== registerData.confirmHaslo" class="error-message">
+    Hasła nie są identyczne.
+  </div>
+  <br />
+
+  <button type="submit" [disabled]="registerForm.invalid">Zarejestruj się</button>
 </form>
 <p>Masz już konto? <a routerLink="/">Zaloguj się</a></p>

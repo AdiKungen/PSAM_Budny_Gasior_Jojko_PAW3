@@ -12,6 +12,7 @@ import { CoursesComponent } from './components/courses/courses.component';
 import { StudentsComponent } from './components/students/students.component';
 import { AttendanceComponent } from './components/attendance/attendance.component';
 import { GradesComponent } from './components/grades/grades.component';
+import { CourseDetailsComponent } from './components/course-details/course-details.component';
 
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -25,7 +26,8 @@ import { TokenInterceptor } from './interceptors/token.interceptor';
     CoursesComponent,
     StudentsComponent,
     AttendanceComponent,
-    GradesComponent
+    GradesComponent,
+    CourseDetailsComponent
   ],
   imports: [
     BrowserModule,
