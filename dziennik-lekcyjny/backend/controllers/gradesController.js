@@ -46,7 +46,6 @@ exports.updateGrade = (req, res) => {
 exports.getAverage = (req, res) => {
   const { kurs_id, uczen_id } = req.params;
 
-  // Pobierz obecności ucznia
   const obecnosciSql = 'SELECT COUNT(*) AS total, SUM(status) AS obecny FROM obecnosci WHERE kurs_id = ? AND uczen_id = ?';
   db.query(obecnosciSql, [kurs_id, uczen_id], (err, obecnosciResult) => {
     if (err) {
@@ -57,7 +56,6 @@ exports.getAverage = (req, res) => {
     const { total, obecny } = obecnosciResult[0];
     const frekwencja = (obecny / total) * 100;
 
-    // Pobierz oceny ucznia
     const ocenySql = `
       SELECT o.*, fs.typ, fs.waga
       FROM oceny o
@@ -71,7 +69,6 @@ exports.getAverage = (req, res) => {
         return res.status(500).json({ message: 'Błąd serwera' });
       }
 
-      // Jeśli frekwencja 100%, anuluj najniższą ocenę z kartkówek
       if (frekwencja === 100) {
         const kartkowki = ocenyResult.filter(ocena => ocena.typ === 'kartkowka');
         if (kartkowki.length > 0) {
@@ -82,7 +79,6 @@ exports.getAverage = (req, res) => {
               console.error('Błąd anulowania oceny:', err);
               return res.status(500).json({ message: 'Błąd serwera' });
             }
-            // Usuń anulowaną ocenę z listy ocen
             ocenyResult = ocenyResult.filter(ocena => ocena.id !== najnizszaKartkowka.id);
             obliczSrednia(ocenyResult, res);
           });
@@ -110,7 +106,6 @@ function obliczSrednia(oceny, res) {
   res.json({ srednia });
 }
 
-// Dodany endpoint do pobierania form sprawdzania dla danego kursu
 exports.getFormsByCourse = (req, res) => {
   const { kurs_id } = req.params;
 
@@ -125,7 +120,6 @@ exports.getFormsByCourse = (req, res) => {
   });
 };
 
-// Dodany endpoint do pobierania ocen dla danego kursu
 exports.getGradesByCourse = (req, res) => {
   const { kurs_id } = req.params;
 

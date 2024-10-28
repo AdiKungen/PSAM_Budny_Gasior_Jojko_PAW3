@@ -13,12 +13,12 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// Trasy
 app.use('/api/auth', authRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/students', studentRoutes);
 app.use('/api/attendance', attendanceRoutes);
 app.use('/api/grades', gradeRoutes);
+app.use('/api/attendance', attendanceRoutes);
 
 const PORT = process.env.PORT || 3000;
 

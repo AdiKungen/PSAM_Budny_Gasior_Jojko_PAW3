@@ -55,7 +55,6 @@ exports.getStudents = (req, res) => {
   });
 };
 
-// Dodany endpoint do pobierania uczniów zapisanych na dany kurs
 exports.getStudentsByCourse = (req, res) => {
   const { kurs_id } = req.params;
 
@@ -72,5 +71,52 @@ exports.getStudentsByCourse = (req, res) => {
       return res.status(500).json({ message: 'Błąd serwera' });
     }
     res.json(results);
+  });
+};
+
+exports.getStudentsNotInCourse = (req, res) => {
+  const { kurs_id } = req.params;
+
+  const sql = `
+    SELECT * FROM uczniowie u
+    WHERE u.id NOT IN (
+      SELECT DISTINCT uczen_id FROM obecnosci WHERE kurs_id = ?
+    )
+  `;
+
+  db.query(sql, [kurs_id], (err, results) => {
+    if (err) {
+      console.error('Błąd pobierania uczniów nie zapisanych na kurs:', err);
+      return res.status(500).json({ message: 'Błąd serwera' });
+    }
+    res.json(results);
+  });
+};
+
+exports.addStudentToCourse = (req, res) => {
+  const { kurs_id, uczen_id } = req.body;
+
+  const getCourseDateSql = 'SELECT data_rozpoczecia FROM kursy WHERE id = ?';
+
+  db.query(getCourseDateSql, [kurs_id], (err, courseResults) => {
+    if (err) {
+      console.error('Błąd pobierania daty rozpoczęcia kursu:', err);
+      return res.status(500).json({ message: 'Błąd serwera' });
+    }
+    if (courseResults.length === 0) {
+      return res.status(404).json({ message: 'Nie znaleziono kursu o podanym ID' });
+    }
+
+    const data_rozpoczecia = courseResults[0].data_rozpoczecia;
+
+    const sql = 'INSERT INTO obecnosci (kurs_id, uczen_id, data, status) VALUES (?, ?, ?, NULL)';
+
+    db.query(sql, [kurs_id, uczen_id, data_rozpoczecia], (err, result) => {
+      if (err) {
+        console.error('Błąd dodawania ucznia do kursu:', err);
+        return res.status(500).json({ message: 'Błąd serwera' });
+      }
+      res.status(201).json({ message: 'Uczeń dodany do kursu' });
+    });
   });
 };

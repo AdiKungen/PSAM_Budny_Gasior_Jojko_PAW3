@@ -24,7 +24,7 @@
 
 <ul>
   <li *ngFor="let course of courses">
-    {{ course.nazwa }} - {{ course.data_rozpoczecia | date:'yyyy-MM-dd' }} ( {{ course.data_rozpoczecia | date:'EEEE' }} )
+    {{ course.nazwa }} - {{ course.data_rozpoczecia | date:'dd-MM-yyyy' }} ( {{ course.data_rozpoczecia | date:'EEEE' }} )
     <button (click)="goToCourseDetails(course.id)">Szczegóły</button>
   </li>
 </ul>

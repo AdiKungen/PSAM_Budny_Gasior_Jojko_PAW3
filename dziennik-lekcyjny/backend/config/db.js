@@ -2,9 +2,11 @@ const mysql = require('mysql');
 
 const connection = mysql.createConnection({
   host: 'localhost',
-  user: 'root',        // Użytkownik bazy danych
-  password: '',        // Hasło do bazy danych
-  database: 'test2'    // Nazwa bazy danych
+  user: 'root', 
+  password: '',
+  database: 'test2',
+  timezone: 'Z',
+  dateStrings: true,
 });
 
 connection.connect((err) => {

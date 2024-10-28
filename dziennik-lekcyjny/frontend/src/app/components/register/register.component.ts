@@ -6,7 +6,6 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-register',
   templateUrl: './register.component.html',
-  styleUrls: ['./register.component.css'],
 })
 export class RegisterComponent {
   registerData: {
@@ -27,17 +26,14 @@ export class RegisterComponent {
 
   register(form: NgForm) {
     if (form.invalid) {
-      // Jeśli formularz jest niepoprawny, nie wysyłaj danych
       return;
     }
 
-    // Sprawdzenie, czy hasła się zgadzają
     if (this.registerData.haslo !== this.registerData.confirmHaslo) {
       return;
     }
 
-    // Wyślij dane do serwisu uwierzytelniania
-    const { imie, nazwisko, login, haslo } = this.registerData; // Pomijamy confirmHaslo
+    const { imie, nazwisko, login, haslo } = this.registerData;
     this.authService.register({ imie, nazwisko, login, haslo }).subscribe(
       (res) => {
         alert('Rejestracja pomyślna');

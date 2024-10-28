@@ -5,16 +5,24 @@ import { Observable } from 'rxjs';
 const API_URL = 'http://localhost:3000/api/attendance';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AttendanceService {
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-  markAttendance(data: any): Observable<any> {
-    return this.http.post(`${API_URL}`, data);
+  getAttendanceDatesByCourse(kurs_id: number): Observable<any> {
+    return this.http.get(`${API_URL}/dates/${kurs_id}`);
   }
 
-  getAttendanceHistory(kurs_id: number, uczen_id: number): Observable<any> {
-    return this.http.get(`${API_URL}/history/${kurs_id}/${uczen_id}`);
+  getAttendanceByCourse(kurs_id: number): Observable<any> {
+    return this.http.get(`${API_URL}/${kurs_id}`);
+  }
+
+  updateAttendanceStatus(data: any): Observable<any> {
+    return this.http.put(`${API_URL}/update`, data);
+  }
+
+  addAttendanceForToday(kurs_id: number): Observable<any> {
+    return this.http.post(`${API_URL}/add-today`, { kurs_id });
   }
 }

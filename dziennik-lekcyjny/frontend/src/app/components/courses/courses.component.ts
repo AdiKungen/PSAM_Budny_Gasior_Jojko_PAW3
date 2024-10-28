@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-courses',
   templateUrl: './courses.component.html',
-  styleUrls: ['./courses.component.css'],
 })
 export class CoursesComponent implements OnInit {
   courses: any[] = [];
@@ -46,7 +45,6 @@ export class CoursesComponent implements OnInit {
     );
   }
 
-  // Nowa metoda do nawigacji do szczegółów kursu
   goToCourseDetails(kurs_id: number) {
     this.router.navigate(['/courses', kurs_id]);
   }

@@ -29,4 +29,12 @@ export class StudentService {
   getStudentsByCourse(kurs_id: number): Observable<any> {
     return this.http.get(`${API_URL}/course/${kurs_id}`);
   }
+
+  getStudentsNotInCourse(kurs_id: number): Observable<any> {
+    return this.http.get(`${API_URL}/not-in-course/${kurs_id}`);
+  }
+
+  addStudentToCourse(data: any): Observable<any> {
+    return this.http.post(`${API_URL}/add-to-course`, data);
+  }
 }

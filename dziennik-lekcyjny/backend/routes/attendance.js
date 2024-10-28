@@ -3,7 +3,9 @@ const router = express.Router();
 const attendanceController = require('../controllers/attendanceController');
 const authenticateToken = require('../middleware/authMiddleware');
 
-router.post('/', authenticateToken, attendanceController.markAttendance);
-router.get('/history/:kurs_id/:uczen_id', authenticateToken, attendanceController.getAttendanceHistory);
+router.get('/dates/:kurs_id', authenticateToken, attendanceController.getAttendanceDatesByCourse);
+router.get('/:kurs_id', authenticateToken, attendanceController.getAttendanceByCourse);
+router.put('/update', authenticateToken, attendanceController.updateAttendanceStatus);
+router.post('/add-today', authenticateToken, attendanceController.addAttendanceForToday);
 
 module.exports = router;

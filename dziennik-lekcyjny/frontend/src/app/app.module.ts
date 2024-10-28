@@ -10,9 +10,8 @@ import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { CoursesComponent } from './components/courses/courses.component';
 import { StudentsComponent } from './components/students/students.component';
-import { AttendanceComponent } from './components/attendance/attendance.component';
-import { GradesComponent } from './components/grades/grades.component';
 import { CourseDetailsComponent } from './components/course-details/course-details.component';
+import { AttendanceService } from './services/attendance.service';
 
 
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
@@ -25,8 +24,6 @@ import { TokenInterceptor } from './interceptors/token.interceptor';
     RegisterComponent,
     CoursesComponent,
     StudentsComponent,
-    AttendanceComponent,
-    GradesComponent,
     CourseDetailsComponent
   ],
   imports: [
@@ -35,7 +32,7 @@ import { TokenInterceptor } from './interceptors/token.interceptor';
     FormsModule,
     HttpClientModule
   ],
-  providers: [{ provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }],
+  providers: [{ provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true }, AttendanceService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

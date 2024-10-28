@@ -1,6 +1,22 @@
 <h2>Szczegóły Kursu: {{ course.nazwa }}</h2>
 
-<!-- Formularz do dodawania nowej formy sprawdzania -->
+<h3>Dodaj Ucznia do Kursu</h3>
+<form (ngSubmit)="addStudentToCourse()">
+  <label for="student-select">Wybierz ucznia:</label>
+  <select
+    id="student-select"
+    [(ngModel)]="selectedStudentId"
+    name="selectedStudentId"
+    required
+  >
+    <option value="" disabled selected>Wybierz ucznia</option>
+    <option *ngFor="let student of availableStudents" [value]="student.id">
+      {{student.id }} - {{ student.imie }} {{ student.nazwisko }}
+    </option>
+  </select>
+  <button type="submit">Dodaj Ucznia</button>
+</form>
+
 <h3>Dodaj Nową Formę Sprawdzania</h3>
 <form #form="ngForm" (ngSubmit)="addForm(form)">
   <label for="typ">Typ:</label>
@@ -11,7 +27,6 @@
     <option value="odpowiedz_ustna">Odpowiedź ustna</option>
     <option value="inna">Inna</option>
   </select>
-  <!-- Komunikat błędu dla pola Typ -->
   <div *ngIf="typ.invalid && typ.touched" class="error-message">
     Proszę wybrać typ.
   </div>
@@ -26,7 +41,7 @@
     required
     #opis="ngModel"
   />
-  <!-- Komunikat błędu dla pola Opis -->
+
   <div *ngIf="opis.invalid && opis.touched" class="error-message">
     Proszę podać opis.
   </div>
@@ -42,24 +57,20 @@
     required
     #waga="ngModel"
   />
-  <!-- Komunikat błędu dla pola Waga -->
   <div *ngIf="waga.invalid && waga.touched" class="error-message">
     Proszę podać wagę.
   </div>
   <br />
 
-  <!-- Przyciski Submit i Reset -->
   <button type="submit" [disabled]="form.invalid">Dodaj Formę</button>
 </form>
 
-<!-- Tabela z uczniami i ocenami -->
 <h3>Lista Uczniów i Oceny</h3>
 <table>
   <thead>
     <tr>
       <th>Id Ucznia</th>
       <th>Imię i Nazwisko Ucznia</th>
-      <!-- Generowanie dynamicznych kolumn -->
       <th *ngFor="let form of forms">
         {{ form.typ }} <br /> ({{ form.opis }})
       </th>
@@ -76,6 +87,31 @@
           max="6"
           [(ngModel)]="gradeValues[student.id][form.id]"
           (blur)="saveGrade(student.id, form.id)"
+        />
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Obecność Uczniów</h3>
+<button type="submit" (click)="addAttendanceForToday()">Dodaj Dzisiejsze Zajęcia</button> <br/> <br/>
+<table>
+  <thead>
+    <tr>
+      <th>Id Ucznia</th>
+      <th>Imię i Nazwisko Ucznia</th>
+      <th *ngFor="let date of attendanceDates">{{ date | date: 'yyyy-MM-dd' }}</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let student of students">
+      <td>{{ student.id }}</td>
+      <td>{{ student.imie }} {{ student.nazwisko }}</td>
+      <td *ngFor="let date of attendanceDates">
+        <input
+          type="checkbox"
+          [checked]="attendanceData[student.id]?.statusy[date] == 1"
+          (change)="onCheckboxChange($event, student.id, date)"
         />
       </td>
     </tr>

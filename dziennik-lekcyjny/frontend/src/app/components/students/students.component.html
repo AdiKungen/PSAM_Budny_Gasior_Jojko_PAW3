@@ -12,8 +12,7 @@
 
 <ul>
   <li *ngFor="let student of students">
-    {{ student.imie }} {{ student.nazwisko }}
+    {{student.id}} - {{ student.imie }} {{ student.nazwisko }}
     <button (click)="deleteStudent(student.id)">Usuń</button>
-    <!-- Możesz dodać opcję edycji ucznia -->
   </li>
 </ul>

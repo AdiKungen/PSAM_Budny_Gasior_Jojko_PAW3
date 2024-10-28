@@ -5,7 +5,6 @@ import { AuthService } from '../../services/auth.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
 
@@ -20,7 +19,7 @@ export class LoginComponent {
     this.authService.login(this.loginData).subscribe(
       res => {
         localStorage.setItem('token', res.token);
-        this.router.navigate(['/courses']);
+        this.router.navigate(['/']);
       },
       err => {
         alert('Nieprawidłowy login lub hasło');

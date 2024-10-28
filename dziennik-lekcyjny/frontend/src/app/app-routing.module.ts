@@ -5,23 +5,14 @@ import { RegisterComponent } from './components/register/register.component';
 import { CoursesComponent } from './components/courses/courses.component';
 import { CourseDetailsComponent } from './components/course-details/course-details.component';
 import { StudentsComponent } from './components/students/students.component';
-import { AttendanceComponent } from './components/attendance/attendance.component';
-import { GradesComponent } from './components/grades/grades.component';
 import { AuthGuard } from './guards/auth.guard';
 
 const routes: Routes = [
-  { path: '', component: LoginComponent },
+  { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
-  { path: 'courses', component: CoursesComponent, canActivate: [AuthGuard] },
-  {
-    path: 'courses/:id',
-    component: CourseDetailsComponent,
-    canActivate: [AuthGuard],
-  },
+  { path: '', component: CoursesComponent, canActivate: [AuthGuard] },
+  { path: 'courses/:id', component: CourseDetailsComponent, canActivate: [AuthGuard] },
   { path: 'students', component: StudentsComponent, canActivate: [AuthGuard] },
-  { path: 'attendance', component: AttendanceComponent, canActivate: [AuthGuard] },
-  { path: 'grades', component: GradesComponent, canActivate: [AuthGuard] },
-  // Możesz dodać dodatkowe trasy lub parametry (np. :id)
 ];
 
 @NgModule({
