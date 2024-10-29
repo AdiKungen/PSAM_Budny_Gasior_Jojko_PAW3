@@ -13,7 +13,6 @@ import { StudentsComponent } from './components/students/students.component';
 import { CourseDetailsComponent } from './components/course-details/course-details.component';
 import { AttendanceService } from './services/attendance.service';
 
-
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { TokenInterceptor } from './interceptors/token.interceptor';
 
