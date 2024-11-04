@@ -45,8 +45,8 @@ export class CourseDetailsComponent implements OnInit {
     this.getForms();
     this.getGrades();
     this.getAvailableStudents();
-    this.getAttendanceDates();
     this.getAttendanceData();
+    this.getAttendanceDates();
   }
 
   getAvailableStudents() {
@@ -72,6 +72,8 @@ export class CourseDetailsComponent implements OnInit {
           this.getStudents();
           this.getAvailableStudents();
           this.selectedStudentId = null;
+          this.getAttendanceData();
+          this.getAttendanceDates();
         },
         (err) => {
           console.error('Błąd dodawania ucznia do kursu:', err);
