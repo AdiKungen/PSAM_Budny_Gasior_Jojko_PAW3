@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CourseService } from '../../services/course.service';
 import { Router } from '@angular/router';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-courses',
@@ -33,11 +34,20 @@ export class CoursesComponent implements OnInit {
     );
   }
 
-  createCourse() {
+  createCourse(courseForm: NgForm) {
+    if (courseForm.invalid) {
+      return;
+    }
+
     this.courseService.createCourse(this.newCourse).subscribe(
       (res) => {
         alert('Kurs utworzony');
         this.getCourses();
+        courseForm.resetForm();
+        this.newCourse = {
+          nazwa: '',
+          data_rozpoczecia: '',
+        };
       },
       (err) => {
         console.error('Błąd tworzenia kursu:', err);

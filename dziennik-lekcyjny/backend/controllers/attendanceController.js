@@ -53,7 +53,6 @@ exports.updateAttendanceStatus = (req, res) => {
       return res.status(500).json({ message: 'Błąd serwera' });
     }
 
-    // Po zaktualizowaniu obecności, aktualizujemy anulowane oceny
     updateCanceledGrade(uczen_id, kurs_id);
 
     res.json({ message: 'Status obecności zaktualizowany' });
@@ -61,7 +60,6 @@ exports.updateAttendanceStatus = (req, res) => {
 };
 
 function updateCanceledGrade(uczen_id, kurs_id) {
-  // Sprawdzamy, czy uczeń ma 100% frekwencji
   const attendanceSql = `
     SELECT COUNT(*) as total_classes, SUM(CASE WHEN status = 1 THEN 1 ELSE 0 END) as attended_classes
     FROM obecnosci
@@ -78,13 +76,11 @@ function updateCanceledGrade(uczen_id, kurs_id) {
     const attended_classes = attendanceResult[0].attended_classes;
 
     if (attended_classes == total_classes && total_classes > 0) {
-      // Uczeń ma 100% frekwencji
-      // Znajdujemy jego najniższą ocenę (nieanulowaną)
       const gradesSql = `
         SELECT o.id, o.wartosc
         FROM oceny o
         JOIN formy_sprawdzania fs ON o.forma_sprawdzania_id = fs.id
-        WHERE o.uczen_id = ? AND o.anulowana = 0 AND fs.kurs_id = ?
+        WHERE o.uczen_id = ? AND fs.kurs_id = ?
         ORDER BY o.wartosc ASC, fs.waga ASC
         LIMIT 1
       `;
@@ -94,8 +90,6 @@ function updateCanceledGrade(uczen_id, kurs_id) {
           console.error('Błąd pobierania ocen:', err);
           return;
         }
-
-        // Anulujemy wcześniejsze anulowania
         const unCancelSql = `
           UPDATE oceny
           SET anulowana = 0
@@ -113,7 +107,6 @@ function updateCanceledGrade(uczen_id, kurs_id) {
           if (gradesResult.length > 0) {
             const lowestGradeId = gradesResult[0].id;
 
-            // Anulujemy najniższą ocenę
             const cancelSql = `
               UPDATE oceny
               SET anulowana = 1
@@ -134,7 +127,6 @@ function updateCanceledGrade(uczen_id, kurs_id) {
         });
       });
     } else {
-      // Uczeń nie ma 100% frekwencji - przywracamy ewentualne anulowane oceny
       const unCancelSql = `
         UPDATE oceny
         SET anulowana = 0
@@ -160,40 +152,51 @@ exports.addAttendanceForToday = (req, res) => {
   const today = new Date().toISOString().substring(0, 10);
 
   const getStudentsSql = `
-    SELECT DISTINCT uczen_id
-    FROM obecnosci
-    WHERE kurs_id = ?
+    SELECT DISTINCT u.id AS uczen_id
+    FROM uczniowie u
+    JOIN (
+      SELECT DISTINCT uczen_id FROM obecnosci WHERE kurs_id = ?
+      UNION
+      SELECT DISTINCT o.uczen_id
+      FROM oceny o
+      JOIN formy_sprawdzania fs ON o.forma_sprawdzania_id = fs.id
+      WHERE fs.kurs_id = ?
+    ) AS uczeni_kursu ON u.id = uczeni_kursu.uczen_id
   `;
 
-  db.query(getStudentsSql, [kurs_id], (err, studentResults) => {
+  db.query(getStudentsSql, [kurs_id, kurs_id], (err, studentResults) => {
     if (err) {
       console.error('Błąd pobierania uczniów dla kursu:', err);
       return res.status(500).json({ message: 'Błąd serwera' });
     }
 
+    if (studentResults.length === 0) {
+      return res.status(404).json({ message: 'Brak uczniów zapisanych na kurs' });
+    }
+
+    const attendanceEntries = studentResults.map((student) => [
+      kurs_id,
+      student.uczen_id,
+      today,
+      null, 
+    ]);
+
     const insertAttendanceSql = `
       INSERT INTO obecnosci (kurs_id, uczen_id, data, status)
-      VALUES (?, ?, ?, NULL)
+      VALUES ?
       ON DUPLICATE KEY UPDATE status = status
     `;
 
-    const attendanceEntries = studentResults.map((student) => {
-      return [kurs_id, student.uczen_id, today];
-    });
-
-    const values = attendanceEntries.map((entry) => `(${db.escape(entry[0])}, ${db.escape(entry[1])}, ${db.escape(entry[2])}, NULL)`).join(',');
-
-    const finalInsertSql = `
-      INSERT INTO obecnosci (kurs_id, uczen_id, data, status)
-      VALUES ${values}
-      ON DUPLICATE KEY UPDATE status = status
-    `;
-
-    db.query(finalInsertSql, (err, result) => {
+    db.query(insertAttendanceSql, [attendanceEntries], (err, result) => {
       if (err) {
         console.error('Błąd dodawania obecności na dzisiejszy dzień:', err);
         return res.status(500).json({ message: 'Błąd serwera' });
       }
+
+      studentResults.forEach((student) => {
+        updateCanceledGrade(student.uczen_id, kurs_id);
+      });
+
       res.json({ message: 'Obecność na dzisiejszy dzień dodana' });
     });
   });

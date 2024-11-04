@@ -25,7 +25,6 @@ exports.addGrade = (req, res) => {
       return res.status(500).json({ message: 'Błąd serwera' });
     }
 
-    // Pobieramy kurs_id na podstawie forma_sprawdzania_id
     const getKursIdSql = `
       SELECT kurs_id FROM formy_sprawdzania WHERE id = ?
     `;
@@ -38,7 +37,6 @@ exports.addGrade = (req, res) => {
 
       const kurs_id = kursResult[0].kurs_id;
 
-      // Aktualizujemy anulowane oceny
       updateCanceledGrade(uczen_id, kurs_id);
 
       res.status(201).json({ message: 'Ocena dodana' });
@@ -58,7 +56,6 @@ exports.updateGrade = (req, res) => {
       return res.status(500).json({ message: 'Błąd serwera' });
     }
 
-    // Pobieramy uczen_id i forma_sprawdzania_id na podstawie id oceny
     const getGradeInfoSql = `
       SELECT uczen_id, forma_sprawdzania_id FROM oceny WHERE id = ?
     `;
@@ -72,7 +69,6 @@ exports.updateGrade = (req, res) => {
       const uczen_id = gradeResult[0].uczen_id;
       const forma_sprawdzania_id = gradeResult[0].forma_sprawdzania_id;
 
-      // Pobieramy kurs_id na podstawie forma_sprawdzania_id
       const getKursIdSql = `
         SELECT kurs_id FROM formy_sprawdzania WHERE id = ?
       `;
@@ -85,7 +81,6 @@ exports.updateGrade = (req, res) => {
 
         const kurs_id = kursResult[0].kurs_id;
 
-        // Aktualizujemy anulowane oceny
         updateCanceledGrade(uczen_id, kurs_id);
 
         res.json({ message: 'Ocena zaktualizowana' });
@@ -95,7 +90,7 @@ exports.updateGrade = (req, res) => {
 };
 
 function updateCanceledGrade(uczen_id, kurs_id) {
-  // Sprawdzamy, czy uczeń ma 100% frekwencji
+
   const attendanceSql = `
     SELECT COUNT(*) as total_classes, SUM(CASE WHEN status = 1 THEN 1 ELSE 0 END) as attended_classes
     FROM obecnosci
@@ -112,8 +107,7 @@ function updateCanceledGrade(uczen_id, kurs_id) {
     const attended_classes = attendanceResult[0].attended_classes;
 
     if (attended_classes == total_classes && total_classes > 0) {
-      // Uczeń ma 100% frekwencji
-      // Znajdujemy jego najniższą ocenę (nieanulowaną)
+
       const gradesSql = `
         SELECT o.id, o.wartosc
         FROM oceny o
@@ -129,7 +123,6 @@ function updateCanceledGrade(uczen_id, kurs_id) {
           return;
         }
 
-        // Anulujemy wcześniejsze anulowania
         const unCancelSql = `
           UPDATE oceny
           SET anulowana = 0
@@ -147,7 +140,6 @@ function updateCanceledGrade(uczen_id, kurs_id) {
           if (gradesResult.length > 0) {
             const lowestGradeId = gradesResult[0].id;
 
-            // Anulujemy najniższą ocenę
             const cancelSql = `
               UPDATE oceny
               SET anulowana = 1
@@ -168,7 +160,6 @@ function updateCanceledGrade(uczen_id, kurs_id) {
         });
       });
     } else {
-      // Uczeń nie ma 100% frekwencji - przywracamy ewentualne anulowane oceny
       const unCancelSql = `
         UPDATE oceny
         SET anulowana = 0

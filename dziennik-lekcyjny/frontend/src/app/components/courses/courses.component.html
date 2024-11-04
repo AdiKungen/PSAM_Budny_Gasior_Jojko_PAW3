@@ -1,6 +1,6 @@
 <h2>Twoje Kursy</h2>
 
-<form (submit)="createCourse(); $event.preventDefault()">
+<form #courseForm="ngForm" (ngSubmit)="createCourse(courseForm)">
   <label for="nazwa">Nazwa Kursu:</label>
   <input
     type="text"
@@ -8,8 +8,13 @@
     [(ngModel)]="newCourse.nazwa"
     name="nazwa"
     required
+    #nazwa="ngModel"
   />
+  <div *ngIf="nazwa.invalid && nazwa.touched" class="error-message">
+    Nazwa kursu jest wymagana.
+  </div>
   <br />
+
   <label for="data_rozpoczecia">Data Rozpoczęcia:</label>
   <input
     type="date"
@@ -17,9 +22,14 @@
     [(ngModel)]="newCourse.data_rozpoczecia"
     name="data_rozpoczecia"
     required
+    #dataRozpoczecia="ngModel"
   />
+  <div *ngIf="dataRozpoczecia.invalid && dataRozpoczecia.touched" class="error-message">
+    Data rozpoczęcia jest wymagana.
+  </div>
   <br />
-  <button type="submit">Utwórz Kurs</button>
+
+  <button type="submit" [disabled]="courseForm.invalid">Utwórz Kurs</button>
 </form>
 
 <ul>

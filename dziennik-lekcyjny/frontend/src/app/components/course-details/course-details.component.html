@@ -74,6 +74,7 @@
       <th *ngFor="let form of forms">
         {{ form.typ }} <br /> ({{ form.opis }})
       </th>
+      <th>Średnia</th>
     </tr>
   </thead>
   <tbody>
@@ -88,6 +89,9 @@
           [(ngModel)]="gradeValues[student.id][form.id]"
           (blur)="saveGrade(student.id, form.id)"
         />
+      </td>
+      <td>
+        {{ studentAverages[student.id] !== null ? (studentAverages[student.id] | number:'1.2-2') : 'Brak ocen' }}
       </td>
     </tr>
   </tbody>

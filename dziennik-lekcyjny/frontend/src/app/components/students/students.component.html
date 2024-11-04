@@ -1,18 +1,38 @@
 <h2>Zarządzanie Uczniami</h2>
 
-<form (submit)="addStudent()">
+<form #studentForm="ngForm" (ngSubmit)="addStudent(studentForm)">
   <label for="imie">Imię:</label>
-  <input type="text" id="imie" [(ngModel)]="newStudent.imie" name="imie" required>
-  <br>
+  <input
+    type="text"
+    id="imie"
+    [(ngModel)]="newStudent.imie"
+    name="imie"
+    required
+    #imie="ngModel"
+  />
+  <div *ngIf="imie.invalid && imie.touched" class="error-message">
+    Imię jest wymagane.
+  </div>
+  <br />
   <label for="nazwisko">Nazwisko:</label>
-  <input type="text" id="nazwisko" [(ngModel)]="newStudent.nazwisko" name="nazwisko" required>
-  <br>
-  <button type="submit">Dodaj Ucznia</button>
+  <input
+    type="text"
+    id="nazwisko"
+    [(ngModel)]="newStudent.nazwisko"
+    name="nazwisko"
+    required
+    #nazwisko="ngModel"
+  />
+  <div *ngIf="nazwisko.invalid && nazwisko.touched" class="error-message">
+    Nazwisko jest wymagane.
+  </div>
+  <br />
+  <button type="submit" [disabled]="studentForm.invalid">Dodaj Ucznia</button>
 </form>
 
 <ul>
   <li *ngFor="let student of students">
-    {{student.id}} - {{ student.imie }} {{ student.nazwisko }}
+    {{ student.id }} - {{ student.imie }} {{ student.nazwisko }}
     <button (click)="deleteStudent(student.id)">Usuń</button>
   </li>
 </ul>

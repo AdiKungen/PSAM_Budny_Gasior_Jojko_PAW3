@@ -29,6 +29,8 @@ export class CourseDetailsComponent implements OnInit {
   };
   gradeValues: { [studentId: number]: { [formId: number]: number | null } } = {};
   
+  studentAverages: { [studentId: number]: number | null } = {};
+
   constructor(
     private route: ActivatedRoute,
     private courseService: CourseService,
@@ -98,6 +100,7 @@ export class CourseDetailsComponent implements OnInit {
       (res) => {
         this.forms = res;
         this.initializeGradeValues();
+        this.calculateStudentAverages();
       },
       (err) => {
         console.error('Błąd pobierania form sprawdzania:', err);
@@ -110,11 +113,36 @@ export class CourseDetailsComponent implements OnInit {
       (res) => {
         this.grades = res;
         this.initializeGradeValues();
+        this.calculateStudentAverages();
       },
       (err) => {
         console.error('Błąd pobierania ocen:', err);
       }
     );
+  }
+
+  calculateStudentAverages() {
+    this.studentAverages = {};
+    this.students.forEach((student) => {
+      let sumaWazona = 0;
+      let sumaWag = 0;
+
+      this.forms.forEach((form) => {
+        const grade = this.grades.find(
+          (g) =>
+            g.uczen_id === student.id &&
+            g.forma_sprawdzania_id === form.id &&
+            g.anulowana === 0
+        );
+        if (grade) {
+          sumaWazona += grade.wartosc * form.waga;
+          sumaWag += form.waga;
+        }
+      });
+
+      const average = sumaWag > 0 ? sumaWazona / sumaWag : null;
+      this.studentAverages[student.id] = average;
+    });
   }
 
   addForm(form: NgForm) {
@@ -168,6 +196,7 @@ export class CourseDetailsComponent implements OnInit {
             : null;
         });
       });
+      this.calculateStudentAverages();
     }
   }
 
@@ -228,8 +257,9 @@ export class CourseDetailsComponent implements OnInit {
     this.attendanceService.addAttendanceForToday(this.kurs_id).subscribe(
       (res) => {
         alert('Dodano dzisiejszy dzień do obecności');
-        this.getAttendanceDates();
         this.getAttendanceData();
+        this.getAttendanceDates();
+        this.getGrades();
       },
       (err) => {
         console.error('Błąd dodawania dzisiejszego dnia do obecności:', err);
@@ -251,7 +281,9 @@ export class CourseDetailsComponent implements OnInit {
     const wartosc = this.gradeValues[uczen_id][forma_sprawdzania_id];
     if (wartosc !== null && wartosc !== undefined) {
       const existingGrade = this.grades.find(
-        (g) => g.uczen_id === uczen_id && g.forma_sprawdzania_id === forma_sprawdzania_id
+        (g) =>
+          g.uczen_id === uczen_id &&
+          g.forma_sprawdzania_id === forma_sprawdzania_id
       );
       const gradeData = {
         uczen_id,

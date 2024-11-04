@@ -1,19 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { StudentService } from '../../services/student.service';
+import { NgForm } from '@angular/forms';
 
 @Component({
   selector: 'app-students',
   templateUrl: './students.component.html',
 })
 export class StudentsComponent implements OnInit {
-
   students: any[] = [];
   newStudent = {
     imie: '',
-    nazwisko: ''
+    nazwisko: '',
   };
 
-  constructor(private studentService: StudentService) { }
+  constructor(private studentService: StudentService) {}
 
   ngOnInit(): void {
     this.getStudents();
@@ -21,22 +21,31 @@ export class StudentsComponent implements OnInit {
 
   getStudents() {
     this.studentService.getStudents().subscribe(
-      res => {
+      (res) => {
         this.students = res;
       },
-      err => {
+      (err) => {
         console.error('Błąd pobierania uczniów:', err);
       }
     );
   }
 
-  addStudent() {
+  addStudent(studentForm: NgForm) {
+    if (studentForm.invalid) {
+      return;
+    }
+
     this.studentService.addStudent(this.newStudent).subscribe(
-      res => {
+      (res) => {
         alert('Uczeń dodany');
         this.getStudents();
+        studentForm.resetForm();
+        this.newStudent = {
+          imie: '',
+          nazwisko: '',
+        };
       },
-      err => {
+      (err) => {
         console.error('Błąd dodawania ucznia:', err);
       }
     );
@@ -44,14 +53,13 @@ export class StudentsComponent implements OnInit {
 
   deleteStudent(id: number) {
     this.studentService.deleteStudent(id).subscribe(
-      res => {
+      (res) => {
         alert('Uczeń usunięty');
         this.getStudents();
       },
-      err => {
+      (err) => {
         console.error('Błąd usuwania ucznia:', err);
       }
     );
   }
-
 }
